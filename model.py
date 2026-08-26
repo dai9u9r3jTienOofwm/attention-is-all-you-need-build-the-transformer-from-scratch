@@ -155,8 +155,16 @@ def build_padding_mask(token_ids, pad_id):
     # TODO: build a boolean mask marking non-pad positions, shaped for broadcasting against attention scores
     return torch.where(token_ids != pad_id,True,False).reshape((token_ids.shape[0],1,1,token_ids.shape[1]))
 
-# Step 15 - build_causal_mask (not yet solved)
-# TODO: implement
+# Step 15 - build_causal_mask
+import torch
+
+def build_causal_mask(seq_len):
+    """Return a (1, 1, seq_len, seq_len) bool mask, True on and below diagonal."""
+    # TODO: build a lower-triangular boolean causal mask of shape (1, 1, seq_len, seq_len)
+    rows = torch.arange(seq_len)
+    cols = torch.arange(seq_len).view(seq_len,1)
+
+    return (rows <= cols).view(1,1,seq_len,seq_len)
 
 # Step 16 - combine_padding_and_causal_masks (not yet solved)
 # TODO: implement
