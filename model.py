@@ -298,8 +298,17 @@ def merge_heads_and_project_output(context, w_o, b_o):
     # TODO: merge the head axis back into d_model and apply the output linear projection.
     return apply_linear_projection(merge_heads_back_to_model_dim(context),w_o,b_o)
 
-# Step 31 - assemble_multi_head_attention_forward (not yet solved)
-# TODO: implement
+# Step 31 - assemble_multi_head_attention_forward
+def assemble_multi_head_attention_forward(query, key, value, w_q, w_k, w_v, w_o, num_heads, mask=None):
+    # TODO: project Q/K/V, split into heads, run scaled dot-product attention, merge heads, output projection.
+    query = apply_linear_projection(query,w_q,bias=None)
+    key = apply_linear_projection(key,w_k,bias=None)
+    value = apply_linear_projection(value,w_v,bias=None)
+    q_h, k_h, v_h = split_qkv_into_heads(query, key, value, num_heads)
+    ctx, attn = multi_head_scaled_dot_product_attention(q_h, k_h, v_h,mask)
+    b_o = torch.zeros(w_o.shape[-1], device=query.device, dtype=query.dtype)
+
+    return merge_heads_and_project_output(ctx, w_o, b_o)
 
 # Step 32 - apply_ffn_first_linear_and_relu (not yet solved)
 # TODO: implement
